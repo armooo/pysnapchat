@@ -62,6 +62,10 @@ class SentSnap(Snap):
         self.timestamp = timestamp
         self.send_timestamp = timestamp
 
+    @property
+    def viewable(self):
+        return False
+
 class ReceivedSnap(Snap):
 
     def __init__(self, id, sender, type, state, timestamp, send_timestamp, view_time = 0):
