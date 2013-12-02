@@ -1,5 +1,6 @@
 from hashlib import sha256
 import time
+from Crypto.Cipher import AES
 
 def build_token(server_token, timestamp, secret="iEk21fuwZApXlz93750dmW22pw389dPwOk",
         pattern="0001110111101110001111010101111011010001001110011000110001000110"):
@@ -33,6 +34,12 @@ def build_evil(original, timestamp, secret="iEk21fuwZApXlz93750dmW22pw389dPwOk",
 
     output = [original[i] if pattern[i] == '0' else hash1[i] for i in range(len(original))]
     return ''.join(output)
+
+def ecb_encrypt(data, key):
+        length = 16 - (len(data) % 16)
+        data += chr(length) * length
+        crypt = AES.new(key, AES.MODE_ECB)
+        return crypt.encrypt(data)
 
 def timestamp():
     """

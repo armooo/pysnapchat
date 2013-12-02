@@ -1,6 +1,6 @@
 import requests
 import time
-from .util import timestamp, build_token
+from .util import timestamp, build_token, ecb_encrypt
 from .friend import Friend
 from .snap import Snap, SentSnap, ReceivedSnap
 class Snapchat():
@@ -65,13 +65,39 @@ class Snapchat():
         self._do_update(result['updates_response'])
         return result
 
-    def send_req(self, path, params, when = None):
+    def upload(self, data, type, media_id = None, when = None, encrypt = True, key = None):
+        if key is None:
+            key = Snap.encryption_key
+        if when is None:
+            when = timestamp()
+        if media_id is None:
+            media_id = self.username.upper() + when
+        if encrypt:
+            data = ecb_encrypt(data, key)
+            print len(data)
+        params = {"username" : self.username, "timestamp": when\
+                , "media_id" : media_id, "type" : type}
+        files = {'data' : ('file', data)}
+        self.send_req("/bq/upload", params, when, files)
+
+        return media_id
+
+    def send_to(self, recipient, media_id, type, time = 10, country_code = "US", when = None):
+        if when is None:
+            when = timestamp()
+        params = {"username" : self.username, "timestamp": when\
+                , "media_id" : media_id, "type" : type\
+                , "country_code" : country_code, "recipient" : recipient\
+                , "time" : time}
+        self.send_req("/bq/send", params, when)
+
+    def send_req(self, path, params, when = None, files = None):
         if when is None:
             when = timestamp()
         if not "req_token" in params:
             params["req_token"] = self.req_token(when)
 
-        r = requests.post(self.host+path,params)
+        r = requests.post(self.host+path,params, files = files)
         if r.status_code != 200:
             raise Exception("Request failed with status %d" % (r.status_code))
         return r
