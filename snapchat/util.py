@@ -31,7 +31,7 @@ def build_evil(original, timestamp, secret="iEk21fuwZApXlz93750dmW22pw389dPwOk",
     sha.update(timestamp + secret)
     hash1 = sha.hexdigest()
 
-    output = [original[i] if pattern[i] == '0' else hash1[i] for i in range(len(hash0))]
+    output = [original[i] if pattern[i] == '0' else hash1[i] for i in range(len(original))]
     return ''.join(output)
 
 def timestamp():
