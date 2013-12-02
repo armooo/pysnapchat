@@ -65,7 +65,9 @@ class Snap():
 
         # otherwise encrypted, decrypt it.
         crypt = AES.new(self.encryption_key, AES.MODE_ECB)
-        result = crypt.decrypt(result)
+        result = bytes(crypt.decrypt(result))
+        # remove padding
+        result = result[:-ord(result[-1])]
         return result
 
     def __repr__(self):
