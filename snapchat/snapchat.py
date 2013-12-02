@@ -52,6 +52,15 @@ class Snapchat():
             raise Exception("Unauthenticated")
         stamp = timestamp()
         params = {"username" : self.username, "timestamp": stamp}
+        result = self.send_req("/bq/updates", params, stamp).json()
+        self._do_update(result)
+        return result
+
+    def update_all(self):
+        if not self.token:
+            raise Exception("Unauthenticated")
+        stamp = timestamp()
+        params = {"username" : self.username, "timestamp": stamp}
         result = self.send_req("/bq/all_updates", params, stamp).json()
         self._do_update(result['updates_response'])
         return result
