@@ -1,6 +1,15 @@
 import requests
 import time
 from .util import timestamp, build_token
+class Friend():
+    def __init__(self, name, display, type, can_see_custom_stories):
+        self.name = name
+        self.display = display
+        self.type = type
+        self.can_see_custom_stories = can_see_custom_stories
+    def __repr__(self):
+        return "name:\"%s\" display:\"%s\" type:%d can_see_custom_stories: %s"\
+                % (self.name, self.display, self.type, self.can_see_custom_stories)
 class SnapChat():
     host = "https://feelinsonice-hrd.appspot.com"
     static_token = "m198sOkJEn37DjqZ32lpRu76xmw288xSQ9"
@@ -9,6 +18,7 @@ class SnapChat():
         self.username = username
         self.password = password
         self.token = None
+        self.friends = None
 
     def connect(self):
         stamp = timestamp()
@@ -16,14 +26,25 @@ class SnapChat():
         result = self.send_req("/bq/login", params, stamp).json()
         self.token = result['auth_token']
         self.login_data = result
+        self._update(result)
 
-    def all_updates(self):
+    def _update(self, json):
+        # update friends
+        friends = set()
+        for friend in json['friends']:
+            friends.add(Friend(friend['name'], friend['display'], friend['type']\
+                               ,friend['can_see_custom_stories']))
+        self.friends = friends
+
+
+    def update(self):
         if not self.token:
             raise Exception("Unauthenticated")
         stamp = timestamp()
         params = {"username" : self.username, "timestamp": stamp}
         result = self.send_req("/bq/all_updates", params, stamp).json()
-        return result['updates_response']['snaps']
+        self._update(result['updates_response'])
+        return result
 
     def send_req(self, path, params, when = None):
         if when is None:
