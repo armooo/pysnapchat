@@ -9,7 +9,7 @@ Features
 
 [ ] Update state for snaps(Viewed, screenshot, etc)
 
-[ ] Send snaps
+[x] Send snaps
 
 [ ] Add/Remove friends
 
