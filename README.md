@@ -4,10 +4,15 @@ Features
 =========
 
 [x] Connect to your Snapchat account and fetch your friends and snaps
+
 [x] Download snaps
+
 [ ] Update state for snaps(Viewed, screenshot, etc)
+
 [ ] Send snaps
+
 [ ] Add/Remove friends
+
 [ ] ????
 
 Snapchat and encryption
