@@ -17,6 +17,8 @@ class Snapchat():
     def connect(self):
         stamp = timestamp()
         params = {"username" : self.username, "password" : self.password, "timestamp": stamp}
+        # clear the token to support reconnecting
+        self.token = None
         result = self.send_req("/bq/login", params, stamp).json()
         self.token = result['auth_token']
         self.login_data = result
