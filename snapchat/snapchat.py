@@ -3,7 +3,7 @@ import time
 from .util import timestamp, build_token
 from .friend import Friend
 from .snap import Snap, SentSnap, ReceivedSnap
-class SnapChat():
+class Snapchat():
     host = "https://feelinsonice-hrd.appspot.com"
     static_token = "m198sOkJEn37DjqZ32lpRu76xmw288xSQ9"
 
