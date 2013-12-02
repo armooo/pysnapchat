@@ -1,15 +1,8 @@
 import requests
 import time
 from .util import timestamp, build_token
-class Friend():
-    def __init__(self, name, display, type, can_see_custom_stories):
-        self.name = name
-        self.display = display
-        self.type = type
-        self.can_see_custom_stories = can_see_custom_stories
-    def __repr__(self):
-        return "name:\"%s\" display:\"%s\" type:%d can_see_custom_stories: %s"\
-                % (self.name, self.display, self.type, self.can_see_custom_stories)
+from .friend import Friend
+from .snap import Snap, SentSnap, ReceivedSnap
 class SnapChat():
     host = "https://feelinsonice-hrd.appspot.com"
     static_token = "m198sOkJEn37DjqZ32lpRu76xmw288xSQ9"
@@ -19,6 +12,7 @@ class SnapChat():
         self.password = password
         self.token = None
         self.friends = None
+        self.snaps = None
 
     def connect(self):
         stamp = timestamp()
@@ -26,16 +20,32 @@ class SnapChat():
         result = self.send_req("/bq/login", params, stamp).json()
         self.token = result['auth_token']
         self.login_data = result
-        self._update(result)
+        self._do_update(result)
 
-    def _update(self, json):
+    def _do_update(self, json):
         # update friends
-        friends = set()
+        friends = []
         for friend in json['friends']:
-            friends.add(Friend(friend['name'], friend['display'], friend['type']\
+            friends.append(Friend(friend['name'], friend['display'], friend['type']\
                                ,friend['can_see_custom_stories']))
         self.friends = friends
 
+        # update snaps
+        snaps = []
+        for snap in json['snaps']:
+            if snap.has_key('rp'):
+                snaps.append(SentSnap(snap['id'], snap['rp'], snap['m'], snap['st'], snap['ts'],\
+                                      snap['sts'], snap.get('t', 0)))
+            elif snap.has_key('sn'):
+                snaps.append(ReceivedSnap(snap['id'], snap['sn'], snap['m'], snap['st'],\
+                                          snap['ts'], snap['sts'], snap.get('t', 0)))
+            else:
+                raise Exception("Unknown snap, no sender or receiver")
+        self.snaps = snaps
+
+
+    def download(self, snap):
+        return snap.download(self)
 
     def update(self):
         if not self.token:
@@ -43,7 +53,7 @@ class SnapChat():
         stamp = timestamp()
         params = {"username" : self.username, "timestamp": stamp}
         result = self.send_req("/bq/all_updates", params, stamp).json()
-        self._update(result['updates_response'])
+        self._do_update(result['updates_response'])
         return result
 
     def send_req(self, path, params, when = None):
