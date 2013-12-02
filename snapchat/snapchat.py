@@ -69,9 +69,6 @@ class Snapchat():
             raise Exception("Request failed with status %d" % (r.status_code))
         return r
 
-    def fetch(self, id):
-        pass
-
     def req_token(self, when):
         if self.token is None:
             return build_token(self.static_token, when)
