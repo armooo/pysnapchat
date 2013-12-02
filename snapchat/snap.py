@@ -7,8 +7,13 @@ class Snap():
         """
         The media type of Snap
         """
-        JPG = 0
-        MP4 = 2
+        IMAGE = 0
+        VIDEO = 1
+        VIDEO_NO_AUDIO = 2
+        FRIEND_REQ = 3
+        FRIEND_REQ_IMAGE = 4
+        FRIEND_REQ_VIDEO = 5
+        FRIEND_REQ_VIDEO_NO_AUDIO = 6
 
     class State():
         """
@@ -16,12 +21,15 @@ class Snap():
 
         Snaps that are viewed are (claimed to be) deleted from the server
         """
-        viewable = 1
-        viewed = 2
+        SENT = 0
+        DELIVERED = 1
+        VIEWED = 2
+        SCREENSHOT = 3
+
 
     @property
     def viewable(self):
-        return self.state == Snap.State.viewable
+        return self.state == Snap.State.DELIVERED
 
     def download(self, connection, when=None):
         """
@@ -37,10 +45,9 @@ class Snap():
         params = {'id' : self.id, 'timestamp' : when, 'username' : connection.username}
         result = connection.send_req("/bq/blob", params, when).content
         # test if result is unencrypted
-        if self.type == Snap.Type.MP4 and result[:3] == '\x00\x00\x00'\
-                     and results[5:12] == '\x66\x74\x79\x70\x33\x67\x70\x35':
+        if result[:3] == '\x00\x00\x00' and results[5:12] == '\x66\x74\x79\x70\x33\x67\x70\x35':
             return result
-        elif self.type == Snap.Type.JPG and result[:3] == '\xFF\xD8\xFF':
+        elif result[:3] == '\xFF\xD8\xFF':
             return result
 
         # otherwise encrypted, decrypt it.

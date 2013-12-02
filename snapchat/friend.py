@@ -1,5 +1,9 @@
-
 class Friend():
+    class State():
+        FRIEND = 0
+        PENDING = 1
+        BLOCKED = 2
+        DELETED = 3
     def __init__(self, name, display, type, can_see_custom_stories):
         self.name = name
         self.display = display
