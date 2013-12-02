@@ -1,5 +1,18 @@
 from .util import timestamp
 from Crypto.Cipher import AES
+class Caption():
+    def __init__(self, text, location, orientation):
+        self.text = text
+        self.location = location
+        self.orientation = orientation
+
+    @staticmethod
+    def from_json(snap):
+        if not snap.has_key('cap_text'):
+            return None
+        return Caption(snap['cap_text'],
+                       snap['cap_pos'],
+                       snap['cap_ori'])
 class Snap():
     encryption_key = "M02cnQ51Ji97vwT4"
 
@@ -60,7 +73,7 @@ class Snap():
 
 class SentSnap(Snap):
 
-    def __init__(self, id, recipient, type, state, timestamp, send_timestamp, view_time = 0):
+    def __init__(self, id, recipient, type, state, timestamp, send_timestamp, view_time = 0, screenshots = 0, caption = None):
         self.id = id
         self.recipient = recipient
         self.user = recipient
@@ -68,14 +81,27 @@ class SentSnap(Snap):
         self.state = state
         self.timestamp = timestamp
         self.send_timestamp = timestamp
+        self.screen_shots = screenshots
+        self.caption = caption
 
+    @staticmethod
+    def from_json(snap):
+        return SentSnap(snap['id'],
+                        snap['rp'],
+                        snap['m'],
+                        snap['st'],
+                        snap['ts'],
+                        snap['sts'],
+                        snap.get('t',0),
+                        snap.get('ss', 0),
+                        Caption.from_json(snap))
     @property
     def viewable(self):
         return False
 
 class ReceivedSnap(Snap):
 
-    def __init__(self, id, sender, type, state, timestamp, send_timestamp, view_time = 0):
+    def __init__(self, id, sender, type, state, timestamp, send_timestamp, view_time = 0, screenshots = 0, caption = None):
         self.id = id
         self.sender = sender
         self.user = sender
@@ -83,4 +109,17 @@ class ReceivedSnap(Snap):
         self.state = state
         self.timestamp = timestamp
         self.send_timestamp = timestamp
+        self.screen_shots = screenshots
+        self.caption = caption
 
+    @staticmethod
+    def from_json(snap):
+        return ReceivedSnap(snap['id'],
+                        snap['sn'],
+                        snap['m'],
+                        snap['st'],
+                        snap['ts'],
+                        snap['sts'],
+                        snap.get('t',0),
+                        snap.get('ss', 0),
+                        Caption.from_json(snap))
