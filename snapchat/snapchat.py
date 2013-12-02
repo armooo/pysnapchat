@@ -74,7 +74,6 @@ class Snapchat():
             media_id = self.username.upper() + when
         if encrypt:
             data = ecb_encrypt(data, key)
-            print len(data)
         params = {"username" : self.username, "timestamp": when\
                 , "media_id" : media_id, "type" : type}
         files = {'data' : ('file', data)}
