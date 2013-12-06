@@ -43,10 +43,6 @@ class Snapchat():
                 raise Exception("Unknown snap, no sender or receiver")
         self.snaps = snaps
 
-
-    def download(self, snap):
-        return snap.download(self)
-
     def update(self):
         if not self.token:
             raise Exception("Unauthenticated")
