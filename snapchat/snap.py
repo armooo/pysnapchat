@@ -44,7 +44,7 @@ class Snap():
     def viewable(self):
         return self.state == Snap.State.DELIVERED and self.type != Snap.Type.FRIEND_REQ
 
-    def download(self, connection, when=None):
+    def download(self, connection, when = None, skip_decrypt = False):
         """
         Download a snap from the server.
         @connection The SnapChat class to use for sending the request
@@ -57,6 +57,8 @@ class Snap():
 
         params = {'id' : self.id, 'timestamp' : when, 'username' : connection.username}
         result = connection.send_req("/bq/blob", params, when).content
+        if skip_decrypt:
+            return result
         # test if result is unencrypted
         if result[:3] == '\x00\x00\x00' and results[5:12] == '\x66\x74\x79\x70\x33\x67\x70\x35':
             return result
