@@ -15,6 +15,12 @@ Features
 
 [ ] ????
 
+Files
+=======
+Snapchat will accept any arbitrary bytes you send them as an image.
+This allows you to use Snapchat as a file sharing tool or even encrypt
+your snaps with your own key/not broken encryption if you don't trust Snapchat.
+
 Snapchat and encryption
 =======================
 
