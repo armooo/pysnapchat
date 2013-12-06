@@ -77,8 +77,10 @@ class Snap():
 
 class SentSnap(Snap):
 
-    def __init__(self, id, recipient, type, state, timestamp, send_timestamp, view_time = 0, screenshots = 0, caption = None):
+    def __init__(self, id, client_id, recipient, type, state, timestamp, send_timestamp,\
+                 view_time = 0, screenshots = 0, caption = None):
         self.id = id
+        self.client_id = client_id
         self.recipient = recipient
         self.user = recipient
         self.type = type
@@ -91,6 +93,7 @@ class SentSnap(Snap):
     @staticmethod
     def from_json(snap):
         return SentSnap(snap['id'],
+                        snap['c_id'],
                         snap['rp'],
                         snap['m'],
                         snap['st'],
