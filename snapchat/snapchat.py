@@ -36,9 +36,9 @@ class Snapchat():
         snaps = []
         for snap in json['snaps']:
             if snap.has_key('rp'):
-                snaps.append(SentSnap.from_json(snap))
+                snaps.append(SentSnap.from_json(self, snap))
             elif snap.has_key('sn'):
-                snaps.append(ReceivedSnap.from_json(snap))
+                snaps.append(ReceivedSnap.from_json(self, snap))
             else:
                 raise Exception("Unknown snap, no sender or receiver")
         self.snaps = snaps

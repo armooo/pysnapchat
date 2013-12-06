@@ -7,7 +7,7 @@ def download_all(username, password, download_dir):
     downloadable = filter(lambda snap : snap.viewable, connection.snaps)
     for snap in downloadable:
         try:
-            data = connection.download(snap)
+            data = connection.download()
             with open(path.join(download_dir, snap.id), "w") as f:
                     f.write(data)
             print("Downloaded snap %s" % (snap.id))

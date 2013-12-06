@@ -44,10 +44,9 @@ class Snap():
     def viewable(self):
         return self.state == Snap.State.DELIVERED and self.type != Snap.Type.FRIEND_REQ
 
-    def download(self, connection, when = None, skip_decrypt = False):
+    def download(self, when = None, skip_decrypt = False):
         """
         Download a snap from the server.
-        @connection The SnapChat class to use for sending the request
         """
         if not self.viewable:
             raise Exception("Snap not viewable, cannot download")
@@ -55,8 +54,8 @@ class Snap():
         if when is None:
             when = timestamp()
 
-        params = {'id' : self.id, 'timestamp' : when, 'username' : connection.username}
-        result = connection.send_req("/bq/blob", params, when).content
+        params = {'id' : self.id, 'timestamp' : when, 'username' : self.connection.username}
+        result = self.connection.send_req("/bq/blob", params, when).content
         if skip_decrypt:
             return result
         # test if result is unencrypted
@@ -77,8 +76,9 @@ class Snap():
 
 class SentSnap(Snap):
 
-    def __init__(self, id, client_id, recipient, type, state, timestamp, send_timestamp,\
+    def __init__(self, connection, id, client_id, recipient, type, state, timestamp, send_timestamp,\
                  view_time = 0, screenshots = 0, caption = None):
+        self.connection = connection
         self.id = id
         self.client_id = client_id
         self.recipient = recipient
@@ -91,8 +91,9 @@ class SentSnap(Snap):
         self.caption = caption
 
     @staticmethod
-    def from_json(snap):
-        return SentSnap(snap['id'],
+    def from_json(conn, snap):
+        return SentSnap(conn,
+                        snap['id'],
                         snap['c_id'],
                         snap['rp'],
                         snap['m'],
@@ -108,7 +109,9 @@ class SentSnap(Snap):
 
 class ReceivedSnap(Snap):
 
-    def __init__(self, id, sender, type, state, timestamp, send_timestamp, view_time = 0, screenshots = 0, caption = None):
+    def __init__(self, connection, id, sender, type, state, timestamp, send_timestamp,\
+            view_time = 0, screenshots = 0, caption = None):
+        self.connection = connection
         self.id = id
         self.sender = sender
         self.user = sender
@@ -120,8 +123,9 @@ class ReceivedSnap(Snap):
         self.caption = caption
 
     @staticmethod
-    def from_json(snap):
-        return ReceivedSnap(snap['id'],
+    def from_json(conn, snap):
+        return ReceivedSnap(conn,
+                        snap['id'],
                         snap['sn'],
                         snap['m'],
                         snap['st'],
