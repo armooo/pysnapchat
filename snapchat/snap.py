@@ -87,7 +87,7 @@ class SentSnap(Snap):
         self.state = state
         self.timestamp = timestamp
         self.send_timestamp = timestamp
-        self.screen_shots = screenshots
+        self.screenshots = screenshots
         self.caption = caption
 
     @staticmethod
@@ -119,7 +119,7 @@ class ReceivedSnap(Snap):
         self.state = state
         self.timestamp = timestamp
         self.send_timestamp = timestamp
-        self.screen_shots = screenshots
+        self.screenshots = screenshots
         self.caption = caption
 
     @staticmethod
