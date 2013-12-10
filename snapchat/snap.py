@@ -42,7 +42,8 @@ class Snap():
 
     @property
     def viewable(self):
-        return self.state == Snap.State.DELIVERED and self.type != Snap.Type.FRIEND_REQ
+        return (self.state == Snap.State.DELIVERED or self.state == Snap.State.SENT)\
+                and self.type != Snap.Type.FRIEND_REQ
 
     def download(self, when = None, skip_decrypt = False):
         """
