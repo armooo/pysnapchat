@@ -59,7 +59,7 @@ class Snap():
         result = self.connection.send_req("/bq/blob", params, when).content
         if skip_decrypt:
             return result
-        # test if result is unencrypted
+        # Test for MP4 and JPG headers in case an actual snap was sent unencrypted
         if result[:3] == '\x00\x00\x00' and results[5:12] == '\x66\x74\x79\x70\x33\x67\x70\x35':
             return result
         elif result[:3] == '\xFF\xD8\xFF':
