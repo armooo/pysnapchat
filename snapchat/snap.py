@@ -1,4 +1,4 @@
-from .util import timestamp
+from .util import timestamp, ecb_decrypt
 from Crypto.Cipher import AES
 class Caption():
     def __init__(self, text, location, orientation):
@@ -66,11 +66,7 @@ class Snap():
             return result
 
         # otherwise encrypted, decrypt it.
-        crypt = AES.new(self.encryption_key, AES.MODE_ECB)
-        result = bytes(crypt.decrypt(result))
-        # remove padding
-        result = result[:-ord(result[-1])]
-        return result
+        return ecb_decrypt(result, self.encryption_key)
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.__dict__)

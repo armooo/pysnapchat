@@ -41,6 +41,15 @@ def ecb_encrypt(data, key):
         crypt = AES.new(key, AES.MODE_ECB)
         return crypt.encrypt(data)
 
+def ecb_decrypt(data, key):
+        crypt = AES.new(key, AES.MODE_ECB)
+        result = bytes(crypt.decrypt(data))
+
+        # remove padding
+        result = result[:-ord(result[-1])]
+
+        return result
+
 def timestamp():
     """
     Get the current time in timestamp form
