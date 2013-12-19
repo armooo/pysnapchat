@@ -20,7 +20,7 @@ setup(
     version = "0.1",
     description = "a Python API for Snapchat",
     long_description = long_description,
-    keywords = "snapchat api"
+    keywords = "snapchat api",
     author = "Chad Brubaker",
     author_email = "pencilo.mmotl@gmail.com",
     url = "https://github.com/pencilo/pysnapchat",
