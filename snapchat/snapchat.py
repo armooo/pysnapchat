@@ -1,5 +1,4 @@
 import requests
-import time
 from .util import timestamp, build_token, ecb_encrypt
 from .friend import Friend
 from .snap import Snap, SentSnap, ReceivedSnap
@@ -15,11 +14,10 @@ class Snapchat():
         self.snaps = None
 
     def connect(self):
-        stamp = timestamp()
-        params = {"username" : self.username, "password" : self.password, "timestamp": stamp}
+        params = {"username" : self.username, "password" : self.password}
         # clear the token to support reconnecting
         self.token = None
-        result = self.send_req("/bq/login", params, stamp).json()
+        result = self.send_req("/bq/login", params).json()
         self.token = result['auth_token']
         self.login_data = result
         self._do_update(result)
@@ -46,53 +44,48 @@ class Snapchat():
     def update(self):
         if not self.token:
             raise Exception("Unauthenticated")
-        stamp = timestamp()
-        params = {"username" : self.username, "timestamp": stamp}
-        result = self.send_req("/bq/updates", params, stamp).json()
+        params = {"username" : self.username}
+        result = self.send_req("/bq/updates", params).json()
         self._do_update(result)
         return result
 
     def update_all(self):
         if not self.token:
             raise Exception("Unauthenticated")
-        stamp = timestamp()
-        params = {"username" : self.username, "timestamp": stamp}
-        result = self.send_req("/bq/all_updates", params, stamp).json()
+        params = {"username" : self.username}
+        result = self.send_req("/bq/all_updates", params).json()
         self._do_update(result['updates_response'])
         return result
 
     def upload(self, data, type, media_id = None, when = None, encrypt = True, key = None):
         if key is None:
             key = Snap.encryption_key
-        if when is None:
-            when = timestamp()
         if media_id is None:
+            when = timestamp()
             media_id = self.username.upper() + when
         if encrypt:
             data = ecb_encrypt(data, key)
-        params = {"username" : self.username, "timestamp": when\
+        params = {"username" : self.username
                 , "media_id" : media_id, "type" : type}
         files = {'data' : ('file', data)}
-        self.send_req("/bq/upload", params, when, files)
+        self.send_req("/bq/upload", params, files=files)
 
         return media_id
 
     def send_to(self, recipient, media_id, type, time = 10, country_code = "US", when = None):
-        if when is None:
-            when = timestamp()
-        params = {"username" : self.username, "timestamp": when\
+        params = {"username" : self.username
                 , "media_id" : media_id, "type" : type\
                 , "country_code" : country_code, "recipient" : recipient\
                 , "time" : time}
-        self.send_req("/bq/send", params, when)
+        self.send_req("/bq/send", params)
 
     def send_req(self, path, params, when = None, files = None):
         if when is None:
             when = timestamp()
-        if not "req_token" in params:
-            params["req_token"] = self.req_token(when)
+        params["timestamp"] = when
+        params["req_token"] = self.req_token(when)
 
-        r = requests.post(self.host+path,params, files = files)
+        r = requests.post(self.host+path, params, files = files)
         if r.status_code != 200:
             raise Exception("Request failed with status %d" % (r.status_code))
         return r
@@ -102,7 +95,3 @@ class Snapchat():
             return build_token(self.static_token, when)
         else:
             return build_token(self.token, when)
-
-
-
-
