@@ -1,5 +1,5 @@
+import json
 from .util import timestamp, ecb_decrypt
-from Crypto.Cipher import AES
 class Caption():
     def __init__(self, text, location, orientation):
         self.text = text
@@ -131,3 +131,19 @@ class ReceivedSnap(Snap):
                         snap.get('t',0),
                         snap.get('ss', 0),
                         Caption.from_json(snap))
+
+    def mark_viewed(self):
+        data = {
+            self.id: {
+                "c": 0,
+                "t": timestamp(),
+                "replayed": 0,
+            }
+        }
+        params = {
+            "username" : self.connection.username,
+            "added_friends_timestamp": self.connection.added_friends_timestamp,
+            "json": json.dumps(data),
+            "events": "[]",
+        }
+        self.connection.send_req("/bq/update_snaps", params)

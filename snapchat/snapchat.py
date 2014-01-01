@@ -11,6 +11,7 @@ class Snapchat():
         self.password = password
         self.token = None
         self.friends = None
+        self.added_friends_timestamp = None
         self.snaps = None
 
     def connect(self):
@@ -24,6 +25,7 @@ class Snapchat():
 
     def _do_update(self, json):
         # update friends
+        self.added_friends_timestamp = json['added_friends_timestamp']
         friends = []
         for friend in json['friends']:
             friends.append(Friend(friend['name'], friend['display'], friend['type']\
