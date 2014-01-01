@@ -87,6 +87,11 @@ class Snapchat():
         }
         self.send_req("/ph/clear", params)
 
+    def add_friend(self, username):
+        params = {"username" : self.username
+              , "friend" : username, "action": "add"}
+        self.send_req("/ph/friend", params)
+
     def send_req(self, path, params, when = None, files = None):
         if when is None:
             when = timestamp()
