@@ -81,6 +81,12 @@ class Snapchat():
                 , "time" : time}
         self.send_req("/bq/send", params)
 
+    def clear(self):
+        params = {
+            "username": self.username,
+        }
+        self.send_req("/ph/clear", params)
+
     def send_req(self, path, params, when = None, files = None):
         if when is None:
             when = timestamp()
