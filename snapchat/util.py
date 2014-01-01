@@ -3,8 +3,8 @@ import time
 from Crypto.Cipher import AES
 
 
-def build_token(server_token, timestamp, secret="iEk21fuwZApXlz93750dmW22pw389dPwOk",
-                pattern="0001110111101110001111010101111011010001001110011000110001000110"):
+def build_token(server_token, timestamp, secret='iEk21fuwZApXlz93750dmW22pw389dPwOk',
+                pattern='0001110111101110001111010101111011010001001110011000110001000110'):
     """
     Standard method to build a token for a request to snapchat
     @server_token the auth_token given on login
@@ -25,8 +25,8 @@ def build_token(server_token, timestamp, secret="iEk21fuwZApXlz93750dmW22pw389dP
     return ''.join(output)
 
 
-def build_evil(original, timestamp, secret="iEk21fuwZApXlz93750dmW22pw389dPwOk",
-               pattern="0001110111101110001111010101111011010001001110011000110001000110"):
+def build_evil(original, timestamp, secret='iEk21fuwZApXlz93750dmW22pw389dPwOk',
+               pattern='0001110111101110001111010101111011010001001110011000110001000110'):
     """
     Proof of concept to generate a new token from an observed token and a new timestamp
     """

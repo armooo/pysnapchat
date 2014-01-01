@@ -12,4 +12,4 @@ class Friend():
         self.can_see_custom_stories = can_see_custom_stories
 
     def __repr__(self):
-        return "%s(%r)" % (self.__class__, self.__dict__)
+        return '%s(%r)' % (self.__class__, self.__dict__)

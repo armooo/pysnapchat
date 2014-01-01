@@ -20,7 +20,7 @@ class Caption():
 
 
 class Snap():
-    encryption_key = "M02cnQ51Ji97vwT4"
+    encryption_key = 'M02cnQ51Ji97vwT4'
 
     class Type():
         """
@@ -57,13 +57,13 @@ class Snap():
         Download a snap from the server.
         """
         if not self.viewable:
-            raise Exception("Snap not viewable, cannot download")
+            raise Exception('Snap not viewable, cannot download')
 
         if when is None:
             when = timestamp()
 
         params = {'id': self.id, 'username': self.connection.username}
-        result = self.connection.send_req("/bq/blob", params, when).content
+        result = self.connection.send_req('/bq/blob', params, when).content
         if skip_decrypt:
             return result
         # Test for MP4 and JPG headers in case an actual snap was sent unencrypted
@@ -76,7 +76,7 @@ class Snap():
         return ecb_decrypt(result, self.encryption_key)
 
     def __repr__(self):
-        return "%s(%r)" % (self.__class__, self.__dict__)
+        return '%s(%r)' % (self.__class__, self.__dict__)
 
 
 class SentSnap(Snap):
@@ -149,15 +149,15 @@ class ReceivedSnap(Snap):
     def mark_viewed(self):
         data = {
             self.id: {
-                "c": 0,
-                "t": timestamp(),
-                "replayed": 0,
+                'c': 0,
+                't': timestamp(),
+                'replayed': 0,
             }
         }
         params = {
-            "username": self.connection.username,
-            "added_friends_timestamp": self.connection.added_friends_timestamp,
-            "json": json.dumps(data),
-            "events": "[]",
+            'username': self.connection.username,
+            'added_friends_timestamp': self.connection.added_friends_timestamp,
+            'json': json.dumps(data),
+            'events': '[]',
         }
-        self.connection.send_req("/bq/update_snaps", params)
+        self.connection.send_req('/bq/update_snaps', params)
