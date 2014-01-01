@@ -59,12 +59,11 @@ class Snapchat():
         self._do_update(result['updates_response'])
         return result
 
-    def upload(self, data, type, media_id = None, when = None, encrypt = True, key = None):
+    def upload(self, data, type, media_id = None, encrypt = True, key = None):
         if key is None:
             key = Snap.encryption_key
         if media_id is None:
-            when = timestamp()
-            media_id = self.username.upper() + when
+            media_id = self.username.upper() + timestamp()
         if encrypt:
             data = ecb_encrypt(data, key)
         params = {"username" : self.username
@@ -74,7 +73,7 @@ class Snapchat():
 
         return media_id
 
-    def send_to(self, recipient, media_id, type, time = 10, country_code = "US", when = None):
+    def send_to(self, recipient, media_id, type, time = 10, country_code = "US"):
         params = {"username" : self.username
                 , "media_id" : media_id, "type" : type\
                 , "country_code" : country_code, "recipient" : recipient\
@@ -92,7 +91,7 @@ class Snapchat():
               , "friend" : username, "action": "add"}
         self.send_req("/ph/friend", params)
 
-    def send_req(self, path, params, when = None, files = None):
+    def send_req(self, path, params, files = None):
         if when is None:
             when = timestamp()
         params["timestamp"] = when

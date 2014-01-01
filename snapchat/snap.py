@@ -45,7 +45,7 @@ class Snap():
         return (self.state == Snap.State.DELIVERED or self.state == Snap.State.SENT)\
                 and self.type != Snap.Type.FRIEND_REQ
 
-    def download(self, when = None, skip_decrypt = False):
+    def download(self, skip_decrypt = False):
         """
         Download a snap from the server.
         """
