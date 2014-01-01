@@ -2,8 +2,9 @@ from hashlib import sha256
 import time
 from Crypto.Cipher import AES
 
+
 def build_token(server_token, timestamp, secret="iEk21fuwZApXlz93750dmW22pw389dPwOk",
-        pattern="0001110111101110001111010101111011010001001110011000110001000110"):
+                pattern="0001110111101110001111010101111011010001001110011000110001000110"):
     """
     Standard method to build a token for a request to snapchat
     @server_token the auth_token given on login
@@ -23,8 +24,9 @@ def build_token(server_token, timestamp, secret="iEk21fuwZApXlz93750dmW22pw389dP
     output = [hash0[i] if pattern[i] == '0' else hash1[i] for i in range(len(hash0))]
     return ''.join(output)
 
+
 def build_evil(original, timestamp, secret="iEk21fuwZApXlz93750dmW22pw389dPwOk",
-        pattern="0001110111101110001111010101111011010001001110011000110001000110"):
+               pattern="0001110111101110001111010101111011010001001110011000110001000110"):
     """
     Proof of concept to generate a new token from an observed token and a new timestamp
     """
@@ -35,11 +37,13 @@ def build_evil(original, timestamp, secret="iEk21fuwZApXlz93750dmW22pw389dPwOk",
     output = [original[i] if pattern[i] == '0' else hash1[i] for i in range(len(original))]
     return ''.join(output)
 
+
 def ecb_encrypt(data, key):
         length = 16 - (len(data) % 16)
         data += chr(length) * length
         crypt = AES.new(key, AES.MODE_ECB)
         return crypt.encrypt(data)
+
 
 def ecb_decrypt(data, key):
         crypt = AES.new(key, AES.MODE_ECB)
@@ -49,6 +53,7 @@ def ecb_decrypt(data, key):
         result = result[:-ord(result[-1])]
 
         return result
+
 
 def timestamp():
     """
