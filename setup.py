@@ -26,4 +26,5 @@ setup(
     url = "https://github.com/pencilo/pysnapchat",
     license = "Apache License 2.0",
     packages = find_packages(),
+    install_requires = ['requests'],
     )
